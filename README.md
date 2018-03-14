@@ -1,0 +1,2 @@
+# hariboteOSByRust
+hariboteOSをRustで開発していきます
