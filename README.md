@@ -12,13 +12,17 @@ Makefileを作ったら追記します.
 #### Compiler
 最新のRustコンパイラをインストールするために以下のコマンドをターミナルに入力し，表示される指示に従いインストールを行う．
 
+    ```
     $ curl https://sh.rustup.rs -sSf | sh
+    ```
 
 デフォルトの設定ではすべてのツールは`~/.cargo/bin`にインストールされる．
 
 インストールされたツール一式を最新のstable版に更新するにはターミナルで以下のコマンドを実行する．
 
+    ```
     $ rustup update
+    ```
 
 #### Path Settings
 パスの設定はデフォルトの設定ではインストール時に自動的に`~/.profile`に追記される．
@@ -27,15 +31,20 @@ Makefileを作ったら追記します.
 #### syntax settings
 なんか適当なエディタ使うと良い。
 
+    ```
     $ cargo install racer
     $ rustup component add rust-src
     $ export RUST_SRC_PATH="$HOME/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src"
     $ cargo install rustfmt
+    ```
 
 ### QEMU(2.11.1)
 自身のパッケージマネージャを使うかQEMUを自身でビルドする.
+
+    ```
     $ sudo pacman -S qemu
     $ qemu-system-i386 --version -> 2.11.1
+    ```
 
 # Coding Rules
 * ファイル名はスネークケース.
