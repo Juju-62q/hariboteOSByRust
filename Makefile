@@ -17,7 +17,7 @@ $(TARGET): ipl.bin
 	nasm $< -o $@ -l $*.lst
 
 run: $(TARGET)
-	qemu-system-x86_64 -drive format=raw,file=$(TARGET),index=0,if=floppy
+	qemu-system-i386 -drive format=raw,file=$(TARGET),index=0,if=floppy
 
 clean:
 	$(RM) $(TARGET)
