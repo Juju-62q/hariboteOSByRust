@@ -4,7 +4,7 @@
 		JMP		entry
 		DB		0x90		; iplへのジャンプ
 
-		DB		"HELLOIPL"		; OEM名
+		DB		"HARIBOTE"		; OEM名
 
 ; BPB
 		DW		512		; セクタ当たりのバイト数
@@ -25,7 +25,7 @@
 		DB		0		; ダーティフラグ
 		DB		0x29		; 拡張ブートサイン
 		DD		0xffffffff		; シリアル番号
-		DB		"HELLO-OS   "		; ボリューム名
+		DB		"HARIBOTEOS   "		; ボリューム名
 		DB		"FAT12   "		; FATタイプ
 
 ; IPL本体
