@@ -27,6 +27,7 @@
 		DD		0xffffffff		; シリアル番号
 		DB		"HARIBOTEOS   "		; ボリューム名
 		DB		"FAT12   "		; FATタイプ
+		RESB	18
 
 ; IPL本体
 
@@ -37,7 +38,23 @@ entry:
 		MOV		DS,AX
 		MOV		ES,AX
 
-		MOV		SI,msg
+		MOV		AX,0x0820
+		MOV		ES,AX
+		MOV		CH,0
+		MOV		DH,0
+		MOV		CL,2
+
+		MOV		AH,0x02
+		MOV		AL,1
+		MOV		BX,0
+		MOV		DL,0x00
+		INT		0x13
+		JC		error
+
+fin:
+		HLT				; 何かあるまでCPUを停止させる
+		JMP		fin		; 無限ループ
+
 putloop:
 		MOV		AL,[SI]
 		ADD		SI,1		; SIに1を足す
@@ -47,13 +64,13 @@ putloop:
 		MOV		BX,15		; カラーコード
 		INT		0x10		; ビデオBIOS呼び出し
 		JMP		putloop
-fin:
-		HLT				; 何かあるまでCPUを停止させる
-		JMP		fin		; 無限ループ
+
+error:
+		MOV		SI,msg
 
 msg:
 		DB		0x0a, 0x0a		; 改行を2つ
-		DB		"hello, world"
+		DB		"load error"
 		DB		0x0a		; 改行
 		DB		0		; 文字列の終了
 

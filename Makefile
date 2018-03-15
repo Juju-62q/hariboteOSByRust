@@ -4,7 +4,7 @@
 
 SRCDIR = src
 
-TARGET=helloos.img
+TARGET=haribote.img
 
 .PHONY: run clean
 
