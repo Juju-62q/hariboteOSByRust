@@ -1,3 +1,4 @@
+CYLS	EQU		10
 		ORG		0x7c00		; このプログラムがどこに読み込まれるのか
 
 ; 以降，512バイトがブートセクタ
@@ -34,22 +35,43 @@
 entry:
 		MOV		AX,0		 ; レジスタ初期化
 		MOV		SS,AX
-		MOV		SP,0x7c00
-		MOV		DS,AX
-		MOV		ES,AX
-
-		MOV		AX,0x0820
-		MOV		ES,AX
 		MOV		CH,0
 		MOV		DH,0
 		MOV		CL,2
 
+readloop:
+		MOV		SI,0
+
+retry:
 		MOV		AH,0x02
 		MOV		AL,1
 		MOV		BX,0
 		MOV		DL,0x00
 		INT		0x13
-		JC		error
+		JNC		next
+		ADD		SI,1
+		CMP		SI,5
+		JAE		error
+		MOV		AH,0x00
+		MOV		DL,0x00
+		INT		0x13
+		JMP		retry
+
+next:
+		MOV		AX,ES
+		ADD		AX,0x0020
+		MOV		ES,AX
+		ADD		CL,1
+		CMP		CL,18
+		JBE		readloop
+		MOV		CL,1
+		ADD		DH,1
+		CMP		DH,2
+		JB		readloop
+		MOV		DH,0
+		ADD		CH,1
+		CMP		CH,CYLS
+		JB		readloop
 
 fin:
 		HLT				; 何かあるまでCPUを停止させる
