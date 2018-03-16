@@ -1,10 +1,11 @@
+CYLS	EQU		10
 		ORG		0x7c00		; このプログラムがどこに読み込まれるのか
 
 ; 以降，512バイトがブートセクタ
 		JMP		entry
 		DB		0x90		; iplへのジャンプ
 
-		DB		"HELLOIPL"		; OEM名
+		DB		"HARIBOTE"		; OEM名
 
 ; BPB
 		DW		512		; セクタ当たりのバイト数
@@ -25,8 +26,9 @@
 		DB		0		; ダーティフラグ
 		DB		0x29		; 拡張ブートサイン
 		DD		0xffffffff		; シリアル番号
-		DB		"HELLO-OS   "		; ボリューム名
+		DB		"HARIBOTEOS   "		; ボリューム名
 		DB		"FAT12   "		; FATタイプ
+		RESB	18
 
 ; IPL本体
 
@@ -35,9 +37,54 @@ entry:
 		MOV		SS,AX
 		MOV		SP,0x7c00
 		MOV		DS,AX
-		MOV		ES,AX
 
-		MOV		SI,msg
+		MOV		AX,0x0820
+		MOV		ES,AX
+		MOV		CH,0
+		MOV		DH,0
+		MOV		CL,2
+
+readloop:
+		MOV		SI,0
+
+retry:
+		MOV		AH,0x02
+		MOV		AL,1
+		MOV		BX,0
+		MOV		DL,0x00
+		INT		0x13
+		JNC		next
+		ADD		SI,1
+		CMP		SI,5
+		JAE		error
+		MOV		AH,0x00
+		MOV		DL,0x00
+		INT		0x13
+		JMP		retry
+
+next:
+		MOV		AX,ES
+		ADD		AX,0x0020
+		MOV		ES,AX
+		ADD		CL,1
+		CMP		CL,18
+		JBE		readloop
+		MOV		CL,1
+		ADD		DH,1
+		CMP		DH,2
+		JB		readloop
+		MOV		DH,0
+		ADD		CH,1
+		CMP		CH,CYLS
+		JB		readloop
+
+		MOV		[0x0ff0],CH
+		JMP		0xc200
+
+fin:
+		HLT				; 何かあるまでCPUを停止させる
+		JMP		fin		; 無限ループ
+
 putloop:
 		MOV		AL,[SI]
 		ADD		SI,1		; SIに1を足す
@@ -47,16 +94,16 @@ putloop:
 		MOV		BX,15		; カラーコード
 		INT		0x10		; ビデオBIOS呼び出し
 		JMP		putloop
-fin:
-		HLT				; 何かあるまでCPUを停止させる
-		JMP		fin		; 無限ループ
+
+error:
+		MOV		SI,msg
 
 msg:
 		DB		0x0a, 0x0a		; 改行を2つ
-		DB		"hello, world"
+		DB		"load error"
 		DB		0x0a		; 改行
 		DB		0		; 文字列の終了
 
-		RESB		0x01fe-($-$$)		; 0x01feバイト目までを0x00で埋める
+		RESB	0x01fe-($-$$)		; 0x01feバイト目までを0x00で埋める
 
 		DB		0x55, 0xaa		; ブートシグネチャ

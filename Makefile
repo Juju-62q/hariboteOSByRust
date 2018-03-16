@@ -1,17 +1,16 @@
 
-.SUFFIXES =
 .SUFFIXES = .asm .bin .lst .img 
 
 SRCDIR = src
 
-TARGET=helloos.img
+TARGET=haribote.img
 
 .PHONY: run clean
 
-$(TARGET): ipl.bin
-	qemu-img create -f raw $(TARGET) 1440k
-	mkfs.vfat -F 12 $(TARGET)
-	dd if=$< conv=notrunc of=$(TARGET)
+$(TARGET): ipl10.bin haribote.bin
+	mformat -f 1440 -C -B ipl10.bin -i $(TARGET)
+	mcopy haribote.bin -i $(TARGET) ::
+
 
 %.bin: $(SRCDIR)/%.asm
 	nasm $< -o $@ -l $*.lst
