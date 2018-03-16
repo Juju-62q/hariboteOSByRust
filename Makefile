@@ -8,7 +8,7 @@ TARGET=haribote.img
 
 .PHONY: run clean
 
-$(TARGET): ipl.bin
+$(TARGET): ipl10.bin
 	qemu-img create -f raw $(TARGET) 1440k
 	mkfs.vfat -F 12 $(TARGET)
 	dd if=$< conv=notrunc of=$(TARGET)

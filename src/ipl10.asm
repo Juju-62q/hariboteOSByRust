@@ -35,6 +35,11 @@ CYLS	EQU		10
 entry:
 		MOV		AX,0		 ; レジスタ初期化
 		MOV		SS,AX
+		MOV		SP,0x7c00
+		MOV		DS,AX
+
+		MOV		AX,0x0820
+		MOV		ES,AX
 		MOV		CH,0
 		MOV		DH,0
 		MOV		CL,2
@@ -96,6 +101,6 @@ msg:
 		DB		0x0a		; 改行
 		DB		0		; 文字列の終了
 
-		RESB		0x01fe-($-$$)		; 0x01feバイト目までを0x00で埋める
+		RESB	0x01fe-($-$$)		; 0x01feバイト目までを0x00で埋める
 
 		DB		0x55, 0xaa		; ブートシグネチャ
