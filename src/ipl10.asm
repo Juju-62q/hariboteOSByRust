@@ -28,7 +28,7 @@ CYLS	EQU		10
 		DD		0xffffffff		; シリアル番号
 		DB		"HARIBOTEOS   "		; ボリューム名
 		DB		"FAT12   "		; FATタイプ
-		RESB	18
+		TIMES	18	DB	0x00
 
 ; IPL本体
 
@@ -104,6 +104,6 @@ msg:
 		DB		0x0a		; 改行
 		DB		0		; 文字列の終了
 
-		RESB	0x01fe-($-$$)		; 0x01feバイト目までを0x00で埋める
+		TIMES	0x01fe-($-$$)	DB	0x00	; 0x01feバイト目までを0x00で埋める
 
 		DB		0x55, 0xaa		; ブートシグネチャ
