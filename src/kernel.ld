@@ -8,7 +8,7 @@ SECTIONS{
 	/*.hrbオブジェクトファイルのフォーマットに従い、ヘッダを定義*/
 	.head 0x0 :
 	{
-		LONG(ADDR(.bss) + SIZEOF(.bss) + 0xfff) & ~ 0xfff)	/* stack+.data+heapの大きさ */
+		LONG((ADDR(.bss) + SIZEOF(.bss) + 0xfff) & ~ 0xfff)	/* stack+.data+heapの大きさ */
 		LONG(0x69726148)	/* シグネチャ "Hari" */
 		LONG(0x0)		/* mmareaの大きさ */
 		LONG(ADDR(.data))	/* スタックの初期位置 */
