@@ -1,13 +1,4 @@
-/*
-kernel.ls
-kotetuco 2008 - 2016
-*/
-
-/*入力オブジェクトファイル(将来的にMakefileで定義)*/
-
-/*出力オブジェクトファイル(Makefileで定義)*/
-
-ENTRY(init_os)
+ENTRY(hari_main)
 
 /*出力フォーマット*/
 OUTPUT_FORMAT("binary")
@@ -17,28 +8,29 @@ SECTIONS{
 	/*.hrbオブジェクトファイルのフォーマットに従い、ヘッダを定義*/
 	.head 0x0 :
 	{
-		LONG((ADDR(.bss) + SIZEOF(.bss) + 0xfff) & ~ 0xfff)
-		BYTE(0x48) BYTE(0x61) BYTE(0x72) BYTE(0x69)
-		LONG(0x0)
-		LONG(ADDR(.data))
-		LONG(SIZEOF(.data))
-		LONG(LOADADDR(.data))
-		LONG(0xe9000000)
-		LONG(init_os - 0x20)
-		LONG((ADDR(.bss) + SIZEOF(.bss) + 0xf) & ~ 0xf)
+		LONG(ADDR(.bss) + SIZEOF(.bss) + 0xfff) & ~ 0xfff)	/* stack+.data+heapの大きさ */
+		LONG(0x69726148)	/* シグネチャ "Hari" */
+		LONG(0x0)		/* mmareaの大きさ */
+		LONG(ADDR(.data))	/* スタックの初期位置 */
+		LONG(SIZEOF(.data))	/* .dataのサイズ */
+		LONG(LOADADDR(.data))	/* .dataの初期値列がファイルのどこにあるか */
+		LONG(0xe9000000)	/* 0xE9000000 */
+		LONG(hari_main - 0x20)	/* エントリアドレス-0x20 */
+		LONG((ADDR(.bss) + SIZEOF(.bss) + 0xf) & ~ 0xf)		/* heap領域の開始アドレス */
 	}
 
-	/*.textセクションのメモリ開始位置*/
+	/* .textセクションのメモリ開始位置 */
 	.text ADDR(.head) + SIZEOF(.head) : SUBALIGN(1)
 	{
 		/*.textセクション全部を含む*/
-		*(.text.os_main)
+		*(.text.hari_main)
 		*(.text*)
 	}
 
+
 	/*.dataセクションのメモリ開始位置*/
 	.data 0x00000400:
-	/*.data :*/
+	/*.data:*/
 
 	/*.dataセクションのファイル上の開始位置*/
 	AT(LOADADDR(.text) + SIZEOF(.text)) SUBALIGN(4)

@@ -6,7 +6,7 @@
 
 #[no_mangle]
 #[start]
-pub fn init_os() {
+pub fn hari_main() {
     loop {}
 }
 

@@ -128,7 +128,7 @@ memcpy:
 
 		ALIGN	16, DB 0x00
 GDT0:
-		RESB	8				; ヌルセレクタ
+		TIMES	8 DB 0x00				; ヌルセレクタ
 		DW		0xffff,0x0000,0x9200,0x00cf	; 読み書き可能セグメント32bit
 		DW		0xffff,0x0000,0x9a28,0x0047	; 実行可能セグメント32bit（bootpack用）
 
@@ -139,4 +139,3 @@ GDTR0:
 
 		ALIGN	16, DB 0x00
 bootpack:
-
