@@ -3,5 +3,6 @@ version: '3.5'
 services:
     haribote-rust:
         build: "./docker/"
+        command: ["bash", "-c", "cd ~/haribote && . ~/.profile && make build"]
         volumes:
-            - "./haribote:/home/developer/haribote"
+            - "./:/home/developer/haribote"

@@ -6,10 +6,13 @@ SRCDIR = src
 
 TARGET=haribote.img
 
-.PHONY: run clean install
+.PHONY: run clean install build
 
 install:
-	@mkdir -p $(BUILDDIR) 
+	docker-compose up
+
+build:
+	@mkdir -p $(BUILDDIR)
 	@make $(TARGET)
 
 $(TARGET): $(BUILDDIR)/ipl10.bin $(BUILDDIR)/haribote.sys
