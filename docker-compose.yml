@@ -1,0 +1,7 @@
+version: '3.5'
+
+services:
+    haribote-rust:
+        build: "./docker/"
+        volumes:
+            - "./haribote:/home/developer/haribote"
