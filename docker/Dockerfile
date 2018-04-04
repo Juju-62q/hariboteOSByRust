@@ -1,4 +1,4 @@
-FROM rust:latest
+FROM rust:1.25.0
 
      # レポジトリを国内ミラーに変更
     RUN sed -i.bak2 -e "s%http://deb.debian.org/debian%http://ftp.jp.debian.org/debian/%g" /etc/apt/sources.list && \
