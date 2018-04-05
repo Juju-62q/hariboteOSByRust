@@ -1,15 +1,21 @@
 
-.SUFFIXES = .asm .bin .lst .img .sys
+.SUFFIXES = .asm .bin .lst .rs .ld .img .sys
 
-BUILDDIR = build
 SRCDIR = src
+BUILDDIR = build
+
+vpath %.asm $(SRCDIR)
+vpath %.rs $(SRCDIR)
 
 TARGET=haribote.img
 
-.PHONY: run clean install
+.PHONY: run clean install build
 
 install:
-	@mkdir -p $(BUILDDIR) 
+	docker-compose up
+
+build:
+	@mkdir -p $(BUILDDIR)
 	@make $(TARGET)
 
 $(TARGET): $(BUILDDIR)/ipl10.bin $(BUILDDIR)/haribote.sys
@@ -19,18 +25,16 @@ $(TARGET): $(BUILDDIR)/ipl10.bin $(BUILDDIR)/haribote.sys
 $(BUILDDIR)/haribote.sys: $(BUILDDIR)/asmhead.bin $(BUILDDIR)/bootpack.bin
 	cat $^ > $@
 
-$(BUILDDIR)/%.bin: $(SRCDIR)/%.rs
+$(BUILDDIR)/%.bin: %.rs
 	rustc --target=i686-unknown-linux-gnu --crate-type=staticlib --emit=obj -C lto -C no-prepopulate-passes -Z verbose -Z no-landing-pads -o $(BUILDDIR)/$*.o $<
 	i686-unknown-linux-gnu-ld -v -nostdlib -Tdata=0x00310000 $(BUILDDIR)/$*.o -T $(SRCDIR)/kernel.ld -o $@
 
-$(BUILDDIR)/%.bin: $(SRCDIR)/%.asm
+$(BUILDDIR)/%.bin: %.asm
 	nasm $< -o $@ -l $(BUILDDIR)/$*.lst
 
-run:
-	@make install
+run: install
 	qemu-system-i386 -drive format=raw,file=$(TARGET),index=0,if=floppy
 
 clean:
 	$(RM) $(TARGET)
 	$(RM) -r $(BUILDDIR)
-
